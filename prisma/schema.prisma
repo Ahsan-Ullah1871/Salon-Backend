@@ -36,7 +36,7 @@ model User {
 enum UserRole {
   super_admin
   admin
-  workers
+  worker
   customer
 }
 
@@ -57,7 +57,6 @@ model Worker {
   national_id       Int
   birth_date        DateTime
   worker_history    CV[]
-  services          Service[]
   schedules         Schedule[]
   created_at        DateTime   @default(now())
   updated_at        DateTime   @updatedAt
@@ -99,18 +98,17 @@ model Category {
 
 // Categoy
 model Service {
-  id           String        @id @default(uuid())
-  name         String
-  image_url    String
-  image_id     String
-  image_desc   UserFile      @relation(fields: [image_id], references: [id])
-  description  String        @default("")
-  price        Int
-  duration     String
-  category_id  String
-  category     Category      @relation(fields: [category_id], references: [id])
-  provider_id  String
-  worker       Worker        @relation(fields: [provider_id], references: [id])
+  id          String   @id @default(uuid())
+  name        String
+  image_url   String
+  image_id    String
+  image_desc  UserFile @relation(fields: [image_id], references: [id])
+  description String   @default("")
+  price       Int
+  duration    String
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id])
+
   is_available Boolean       @default(true)
   schedules    Schedule[]
   appointments Appointment[]

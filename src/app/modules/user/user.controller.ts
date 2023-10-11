@@ -4,20 +4,19 @@ import { UserServices } from "./user.services";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 
-//  Get   user profile information
+//*  Get   user list
 const usersList = catchAsync(async (req: Request, res: Response) => {
-	const { _id: user_id } = req.logged_in_user;
-
 	const result = await UserServices.users_list();
 
 	sendResponse(res, {
 		status_code: httpStatus.OK,
 		success: true,
 		data: result,
-		message: "User's information retrieved successfully",
+		message: "User's list  retrieved successfully",
 	});
 });
-//  Get   user profile information
+
+//*  Get   user profile information
 const userDetails = catchAsync(async (req: Request, res: Response) => {
 	const { id: user_id } = req.params;
 
@@ -30,7 +29,8 @@ const userDetails = catchAsync(async (req: Request, res: Response) => {
 		message: "User's information retrieved successfully",
 	});
 });
-//  Get   users_profile
+
+//*  Get   users_profile
 const userProfile = catchAsync(async (req: Request, res: Response) => {
 	const user_data = req.logged_in_user;
 
@@ -43,12 +43,18 @@ const userProfile = catchAsync(async (req: Request, res: Response) => {
 		message: "User's information retrieved successfully",
 	});
 });
-//  Get   user profile information
+
+//*  Update   user profile
 const userUpdate = catchAsync(async (req: Request, res: Response) => {
 	const { id: user_id } = req.params;
 	const { ...user_data } = req.body;
+	const logged_in_user = req.logged_in_user;
 
-	const result = await UserServices.users_update(user_id, user_data);
+	const result = await UserServices.users_update(
+		user_id,
+		user_data,
+		logged_in_user
+	);
 
 	sendResponse(res, {
 		status_code: httpStatus.OK,
@@ -58,7 +64,7 @@ const userUpdate = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
-//  Get   user profile information
+// * Delete user profile information
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
 	const { id: user_id } = req.params;
 

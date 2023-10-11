@@ -40,7 +40,7 @@ const user_signup = async (
 	// access token
 	const token = jwtHelper.create_token(
 		{
-			userId: created_user?.id,
+			user_id: created_user?.id,
 			role: created_user?.role,
 		},
 		config.jwt.access_token_secret as Secret,
@@ -105,7 +105,7 @@ const user_login = async (
 	// access token
 	const token = jwtHelper.create_token(
 		{
-			userId: user?.id,
+			user_id: user?.id,
 			role: user?.role,
 			email: user?.email,
 		},
@@ -168,7 +168,7 @@ const refresh_token = async (
 	// access token
 	const new_token = jwtHelper.create_token(
 		{
-			userId: user?.id,
+			user_id: user?.id,
 			role: user?.role,
 			email: user?.email,
 		},
