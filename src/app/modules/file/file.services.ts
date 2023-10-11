@@ -8,10 +8,11 @@ import { IUploadFile } from "../../../interfaces/file";
 import { FileUploadHelper } from "../../../helpers/fileUploadHelper";
 import { UserFile } from "@prisma/client";
 
-// Create new user
+// Create new file
 const file_upload = async (req: Request): Promise<UserFile | null> => {
 	const file = req.file as IUploadFile;
 	const uploadedImage = await FileUploadHelper.uploadToCloudinary(file);
+	const user_data = req.logged_in_user;
 
 	if (uploadedImage) {
 		const created_file = await prisma.userFile.create({
@@ -23,7 +24,7 @@ const file_upload = async (req: Request): Promise<UserFile | null> => {
 				width: uploadedImage.width,
 				height: uploadedImage.height,
 				bytes: uploadedImage.bytes,
-				user_id: "test",
+				user_id: user_data.user_id,
 			},
 		});
 
