@@ -98,23 +98,23 @@ model Category {
 
 // Categoy
 model Service {
-  id          String   @id @default(uuid())
-  name        String
-  image_url   String
-  image_id    String
-  image_desc  UserFile @relation(fields: [image_id], references: [id])
-  description String   @default("")
-  price       Int
-  duration    String
-  category_id String
-  category    Category @relation(fields: [category_id], references: [id])
-
+  id           String        @id @default(uuid())
+  name         String
+  image_url    String
+  image_id     String
+  image_desc   UserFile      @relation(fields: [image_id], references: [id])
+  description  String        @default("")
+  price        Int
+  duration     String
+  category_id  String
+  category     Category      @relation(fields: [category_id], references: [id])
   is_available Boolean       @default(true)
   schedules    Schedule[]
   appointments Appointment[]
   reviews      Review[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
+  blog_posts   BlogPost[]
 
   @@map("services")
 }
@@ -139,7 +139,7 @@ model Schedule {
 
 // Appointment
 model Appointment {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   user_id     String
   user        User     @relation(fields: [user_id], references: [id])
   service_id  String
@@ -170,7 +170,7 @@ enum AppointmentStatus {
 
 // Review
 model Review {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(uuid())
   user_id String
   user    User   @relation(fields: [user_id], references: [id])
 
@@ -187,11 +187,14 @@ model Review {
 
 // BlogPost
 model BlogPost {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   title       String
   content     String
+  tags        String
   author_id   String
   author      User      @relation(fields: [author_id], references: [id])
+  service_id  String?
+  service     Service?  @relation(fields: [service_id], references: [id])
   published   Boolean   @default(false)
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
