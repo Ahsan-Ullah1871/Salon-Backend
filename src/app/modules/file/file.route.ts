@@ -23,5 +23,16 @@ router.post(
 	FileController.fileUpload
 );
 
+router.get(
+	"/",
+	authHandler(
+		UserRole.admin,
+		UserRole.super_admin,
+		UserRole.worker,
+		UserRole.customer
+	),
+	FileController.allFiles
+);
+
 export const FileRoute = router;
 

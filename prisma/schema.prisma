@@ -228,6 +228,8 @@ model UserFile {
   user        User       @relation(fields: [user_id], references: [id])
   services    Service[]
   categories  Category[]
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
 
   @@map("user_files")
 }

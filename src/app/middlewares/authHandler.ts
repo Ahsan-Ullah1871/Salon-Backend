@@ -7,6 +7,7 @@ import { jwtHelper } from "../../helpers/jwtHelper";
 import config from "../../config";
 import { Secret } from "jsonwebtoken";
 import { UserRole } from "@prisma/client";
+import prisma from "../../shared/prisma";
 
 // requestValidationHandler
 const authHandler =
@@ -42,6 +43,21 @@ const authHandler =
 
 			//   check if the user is authenticated
 			if (!user_id) {
+				throw new ApiError(
+					httpStatus.UNAUTHORIZED,
+					"Unauthorized"
+				);
+			}
+
+			// user check form server
+			const user_details = await prisma.user.findUnique({
+				where: {
+					id: user_id,
+					email,
+					role,
+				},
+			});
+			if (!user_details) {
 				throw new ApiError(
 					httpStatus.UNAUTHORIZED,
 					"Unauthorized"
