@@ -40,5 +40,4 @@ router.delete(
 	BlogPostController.deleteBlogPost
 );
 
-export const ServiceRoute = router;
-
+export const BlogPostRoute = router;
