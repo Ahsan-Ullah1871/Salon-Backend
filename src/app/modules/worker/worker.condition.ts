@@ -1,13 +1,13 @@
-import { blog_post_search_condition_keys } from "./blog_post.constant";
-import { IBlogPostFilter } from "./blog_post.interface";
+import { worker_search_condition_keys } from "./worker.constant";
+import { IWorkerFilter } from "./worker.interface";
 
-export const GetWhereConditions = (filters: IBlogPostFilter) => {
+export const GetWhereConditions = (filters: IWorkerFilter) => {
 	const { search, ...filterData } = filters;
 	const andConditions = [];
 
 	if (search) {
 		andConditions.push({
-			OR: blog_post_search_condition_keys.map((field) => ({
+			OR: worker_search_condition_keys.map((field) => ({
 				[field]: {
 					contains: search,
 					mode: "insensitive",

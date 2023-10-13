@@ -87,8 +87,12 @@ const allAppointmentsByWorkers = catchAsync(
 //  appointmentDetails
 const appointmentDetails = catchAsync(async (req: Request, res: Response) => {
 	const { id } = req.params;
+	const logged_in_user = req.logged_in_user;
 
-	const result = await appointmentServices.get_appointment_details(id);
+	const result = await appointmentServices.get_appointment_details(
+		id,
+		logged_in_user
+	);
 
 	sendResponse(res, {
 		status_code: httpStatus.OK,
