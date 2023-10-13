@@ -139,20 +139,20 @@ model Schedule {
 
 // Appointment
 model Appointment {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   user_id     String
-  user        User     @relation(fields: [user_id], references: [id])
+  user        User              @relation(fields: [user_id], references: [id])
   service_id  String
-  service     Service  @relation(fields: [service_id], references: [id])
+  service     Service           @relation(fields: [service_id], references: [id])
   schedule_id String
-  schedule    Schedule @relation(fields: [schedule_id], references: [id])
-
-  status     AppointmentStatus
-  date       DateTime
-  start_time DateTime
-  end_time   DateTime
-  created_at DateTime          @default(now())
-  updated_at DateTime          @updatedAt
+  schedule    Schedule          @relation(fields: [schedule_id], references: [id])
+  is_paid     Boolean           @default(false)
+  status      AppointmentStatus
+  date        DateTime
+  start_time  DateTime
+  end_time    DateTime
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
 
   @@map("appointments")
 }

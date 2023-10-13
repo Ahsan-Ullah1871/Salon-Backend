@@ -8,6 +8,7 @@ import { ReviewRoute } from "../app/modules/review/review.routes";
 import { BlogPostRoute } from "../app/modules/blog_post/blog_post.routes";
 import { WorkerRoute } from "../app/modules/worker/worker.routes";
 import { ScheduleRoute } from "../app/modules/schedule/schedule.routes";
+import { AppointmentRoute } from "../app/modules/appointment/appointment.routes";
 
 const SalonRouter = express.Router();
 
@@ -21,6 +22,7 @@ const all_routes = [
 	{ path: "/review", router: ReviewRoute },
 	{ path: "/worker", router: WorkerRoute },
 	{ path: "/schedule", router: ScheduleRoute },
+	{ path: "/appointment", router: AppointmentRoute },
 ];
 
 all_routes.map((item) => SalonRouter.use(item.path, item.router));
