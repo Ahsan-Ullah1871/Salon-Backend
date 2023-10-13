@@ -9,7 +9,7 @@ import httpStatus from "http-status";
 import { ILogin, ILoginResponse, ISignUpResponse } from "./auth.interface";
 import { hashingHelper } from "../../../helpers/hashingHelper";
 
-// Create new user
+//* Create new user
 const user_signup = async (
 	user_data: User
 ): Promise<ISignUpResponse | null> => {
@@ -40,7 +40,7 @@ const user_signup = async (
 	// access token
 	const token = jwtHelper.create_token(
 		{
-			userId: created_user?.id,
+			user_id: created_user?.id,
 			role: created_user?.role,
 		},
 		config.jwt.access_token_secret as Secret,
@@ -61,7 +61,7 @@ const user_signup = async (
 	return { token, refresh_token, user: userWithoutPassword };
 };
 
-// login user
+//* login user
 const user_login = async (
 	user_data: ILogin
 ): Promise<ILoginResponse | null> => {
@@ -105,7 +105,7 @@ const user_login = async (
 	// access token
 	const token = jwtHelper.create_token(
 		{
-			userId: user?.id,
+			user_id: user?.id,
 			role: user?.role,
 			email: user?.email,
 		},
@@ -130,7 +130,7 @@ const user_login = async (
 	return { token, refresh_token, user: userWithoutPassword };
 };
 
-// refresh_token
+//* refresh_token
 const refresh_token = async (
 	refresh_token: string
 ): Promise<ILoginResponse | null> => {
@@ -168,7 +168,7 @@ const refresh_token = async (
 	// access token
 	const new_token = jwtHelper.create_token(
 		{
-			userId: user?.id,
+			user_id: user?.id,
 			role: user?.role,
 			email: user?.email,
 		},

@@ -7,6 +7,7 @@ import { jwtHelper } from "../../helpers/jwtHelper";
 import config from "../../config";
 import { Secret } from "jsonwebtoken";
 import { UserRole } from "@prisma/client";
+import prisma from "../../shared/prisma";
 
 // requestValidationHandler
 const authHandler =
@@ -19,6 +20,9 @@ const authHandler =
 		try {
 			//   check authorization
 			const token = req.headers?.authorization;
+			console.log("====================================");
+			console.log({ token });
+			console.log("====================================");
 
 			if (!token) {
 				throw new ApiError(
@@ -31,14 +35,29 @@ const authHandler =
 				token,
 				config.jwt.access_token_secret as Secret
 			);
-			const { userId, email, role } = decoded_user;
-			console.log(userId, email, role);
+			const { user_id, email, role } = decoded_user;
+			console.log(decoded_user);
 
 			// set in req
 			req.logged_in_user = decoded_user;
 
 			//   check if the user is authenticated
-			if (!userId) {
+			if (!user_id) {
+				throw new ApiError(
+					httpStatus.UNAUTHORIZED,
+					"Unauthorized"
+				);
+			}
+
+			// user check form server
+			const user_details = await prisma.user.findUnique({
+				where: {
+					id: user_id,
+					email,
+					role,
+				},
+			});
+			if (!user_details) {
 				throw new ApiError(
 					httpStatus.UNAUTHORIZED,
 					"Unauthorized"

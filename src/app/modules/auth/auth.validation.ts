@@ -17,7 +17,6 @@ export const user_signup_zod_schema = z.object({
 				required_error: "User role  is required",
 			}
 		),
-
 		profile_image: z
 			.string({
 				required_error: "Profile Image  is required",

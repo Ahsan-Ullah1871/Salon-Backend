@@ -6,12 +6,19 @@ import httpStatus from "http-status";
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import { FileUploadHelper } from "../../../helpers/fileUploadHelper";
-import { UserFile } from "@prisma/client";
+import { Prisma, UserFile } from "@prisma/client";
+import { IFileFilter } from "./file.interface";
+import { IPagination } from "../../../interfaces/pagination";
+import { JwtPayload } from "jsonwebtoken";
+import { GenericResponse } from "../../../interfaces/common";
+import { pagination_map } from "../../../helpers/pagination";
+import { GetWhereConditions } from "./file.condition";
 
-// Create new user
+// Create new file
 const file_upload = async (req: Request): Promise<UserFile | null> => {
 	const file = req.file as IUploadFile;
 	const uploadedImage = await FileUploadHelper.uploadToCloudinary(file);
+	const user_data = req.logged_in_user;
 
 	if (uploadedImage) {
 		const created_file = await prisma.userFile.create({
@@ -23,7 +30,7 @@ const file_upload = async (req: Request): Promise<UserFile | null> => {
 				width: uploadedImage.width,
 				height: uploadedImage.height,
 				bytes: uploadedImage.bytes,
-				user_id: "test",
+				user_id: user_data.user_id,
 			},
 		});
 
@@ -32,7 +39,46 @@ const file_upload = async (req: Request): Promise<UserFile | null> => {
 	throw new ApiError(httpStatus.BAD_REQUEST, "Image not uploaded ");
 };
 
+// * get_all_files
+
+const get_all_files = async (
+	logged_in_user: JwtPayload,
+	pagination_data: Partial<IPagination>,
+	filers: IFileFilter
+): Promise<GenericResponse<UserFile[]> | null> => {
+	//
+	const { page, size, skip, sortObject } = pagination_map(
+		pagination_data,
+		"created_at"
+	);
+
+	// and conditions (for search and filter)
+	const whereConditions: Prisma.UserFileWhereInput =
+		GetWhereConditions(filers);
+
+	//
+	const all_file = await prisma.userFile.findMany({
+		where: whereConditions,
+		skip,
+		take: size,
+		orderBy: sortObject,
+	});
+	const total = await prisma.service.count();
+	const totalPage = Math.ceil(total / size);
+
+	return {
+		meta: {
+			page: Number(page),
+			size: Number(size),
+			total: total,
+			totalPage,
+		},
+		data: all_file,
+	};
+};
+
 export const FileServices = {
 	file_upload,
+	get_all_files,
 };
 
