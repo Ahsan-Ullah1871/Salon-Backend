@@ -50,9 +50,9 @@ model Worker {
   name              String
   father_name       String
   mother_name       String
-  is_marrid         Boolean    @default(false)
+  is_married        Boolean    @default(false)
   phone_number      Int        @unique
-  parmanent_address String
+  permanent_address String
   current_address   String
   national_id       Int
   birth_date        DateTime

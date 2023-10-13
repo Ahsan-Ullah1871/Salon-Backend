@@ -6,6 +6,7 @@ import { CategoryRoute } from "../app/modules/category/category.routes";
 import { ServiceRoute } from "../app/modules/service/service.routes";
 import { ReviewRoute } from "../app/modules/review/review.routes";
 import { BlogPostRoute } from "../app/modules/blog_post/blog_post.routes";
+import { WorkerRoute } from "../app/modules/worker/worker.routes";
 
 const SalonRouter = express.Router();
 
@@ -17,6 +18,7 @@ const all_routes = [
 	{ path: "/service", router: ServiceRoute },
 	{ path: "/blog", router: BlogPostRoute },
 	{ path: "/review", router: ReviewRoute },
+	{ path: "/worker", router: WorkerRoute },
 ];
 
 all_routes.map((item) => SalonRouter.use(item.path, item.router));

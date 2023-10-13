@@ -24,7 +24,7 @@ router.get("/:id", reviewController.reviewDetails);
 
 router.patch(
 	"/:id",
-	authHandler(UserRole.admin, UserRole.super_admin, UserRole.worker),
+	authHandler(UserRole.admin, UserRole.super_admin, UserRole.customer),
 	requestValidationHandler(update_review_zod_schema),
 	reviewController.updateReview
 );
