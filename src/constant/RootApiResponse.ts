@@ -1,5 +1,5 @@
 const root_api_response = {
-	welcomeMessage: "Welcome to the Book catalog Backend API documentation!",
+	welcomeMessage: "Welcome to the salon  shop Backend API documentation!",
 	LiveUrl: "https://books-catalog-by-postgeres.vercel.app",
 	// GithubURL:
 	//   'https://github.com/Porgramming-Hero-web-course/l2b1a4-cow-hut-admin-auth-Ahsan-Ullah1871',

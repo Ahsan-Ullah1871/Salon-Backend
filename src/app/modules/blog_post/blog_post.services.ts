@@ -135,7 +135,19 @@ const get_blogs_by_service_id = async (
 
 //* BlogPost  details
 const get_blog_details = async (id: string): Promise<BlogPost | null> => {
-	const isExist = await prisma.blogPost.findUnique({ where: { id } });
+	const isExist = await prisma.blogPost.findUnique({
+		where: { id },
+		include: {
+			author: {
+				select: {
+					name: true,
+					profile_image: true,
+					id: true,
+				},
+			},
+			service: true,
+		},
+	});
 
 	if (!isExist) {
 		throw new ApiError(httpStatus.NOT_FOUND, "Blog not found");
