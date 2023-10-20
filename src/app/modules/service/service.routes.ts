@@ -19,7 +19,7 @@ router.post(
 );
 
 router.get("/", ServiceController.allServices);
-router.get("/:categoryID/category", ServiceController.cateGoryServices);
+router.get("/category/:categoryID/", ServiceController.cateGoryServices);
 router.get("/:id", ServiceController.serviceDetails);
 
 router.patch(

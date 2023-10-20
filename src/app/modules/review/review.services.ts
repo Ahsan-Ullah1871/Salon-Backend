@@ -62,7 +62,7 @@ const get_all_reviews = async (
 		take: size,
 		orderBy: sortObject,
 	});
-	const total = await prisma.review.count();
+	const total = await prisma.review.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {

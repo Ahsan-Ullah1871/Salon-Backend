@@ -9,6 +9,9 @@ import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../../shared/prisma";
 import { IServiceFilter } from "./service.interface";
 import { Prisma, Service } from "@prisma/client";
+import { DateISOConverter } from "../../../constant/DateStriingCOnverter";
+
+const today = new Date();
 
 //* Create new service
 const create_new_service = async (
@@ -51,8 +54,17 @@ const get_all_service = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			schedules: {
+				where: {
+					date: DateISOConverter(today),
+				},
+			},
+		},
 	});
-	const total = await prisma.service.count();
+	const total = await prisma.service.count({
+		where: whereConditions,
+	});
 	const totalPage = Math.ceil(total / size);
 
 	return {
@@ -77,7 +89,7 @@ const get_service_by_category_id = async (
 	);
 
 	//
-	const all_books = await prisma.service.findMany({
+	const all_services = await prisma.service.findMany({
 		where: { category_id: ct_id },
 		skip,
 		take: size,
@@ -94,7 +106,7 @@ const get_service_by_category_id = async (
 			total: total,
 			totalPage,
 		},
-		data: all_books,
+		data: all_services,
 	};
 };
 

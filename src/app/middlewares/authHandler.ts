@@ -20,9 +20,6 @@ const authHandler =
 		try {
 			//   check authorization
 			const token = req.headers?.authorization;
-			console.log("====================================");
-			console.log({ token });
-			console.log("====================================");
 
 			if (!token) {
 				throw new ApiError(
@@ -36,7 +33,6 @@ const authHandler =
 				config.jwt.access_token_secret as Secret
 			);
 			const { user_id, email, role } = decoded_user;
-			console.log(decoded_user);
 
 			// set in req
 			req.logged_in_user = decoded_user;

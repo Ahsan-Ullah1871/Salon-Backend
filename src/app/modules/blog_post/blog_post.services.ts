@@ -65,9 +65,19 @@ const get_all_blogs = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			author: {
+				select: {
+					name: true,
+					profile_image: true,
+					id: true,
+				},
+			},
+			service: true,
+		},
 	});
 
-	const total = await prisma.blogPost.count();
+	const total = await prisma.blogPost.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {
@@ -97,6 +107,16 @@ const get_blogs_by_service_id = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			author: {
+				select: {
+					name: true,
+					profile_image: true,
+					id: true,
+				},
+			},
+			service: true,
+		},
 	});
 	const total = await prisma.blogPost.count({
 		where: { service_id },
@@ -154,19 +174,29 @@ const blog_post_update = async (
 	}
 
 	//
-	const updated_service_data = await prisma.blogPost.update({
+	const updated_blog_data = await prisma.blogPost.update({
 		where: { id: item_id },
 		data: blog_post,
+		include: {
+			author: {
+				select: {
+					name: true,
+					profile_image: true,
+					id: true,
+				},
+			},
+			service: true,
+		},
 	});
 
-	if (!updated_service_data) {
+	if (!updated_blog_data) {
 		throw new ApiError(
 			httpStatus.EXPECTATION_FAILED,
 			"Failed to update blog post data"
 		);
 	}
 
-	return updated_service_data;
+	return updated_blog_data;
 };
 
 // * delete_blog_post
@@ -183,6 +213,16 @@ const delete_blog_post = async (item_id: string): Promise<BlogPost | null> => {
 	const deleted_item_data = await prisma.blogPost.delete({
 		where: {
 			id: item_id,
+		},
+		include: {
+			author: {
+				select: {
+					name: true,
+					profile_image: true,
+					id: true,
+				},
+			},
+			service: true,
 		},
 	});
 

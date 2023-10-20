@@ -5,7 +5,6 @@ import salon_app from "./salon_app";
 import { Server } from "http";
 
 process.on("uncaughtException", (error) => {
-	console.log(error);
 	process.exit(1);
 });
 
@@ -36,3 +35,4 @@ async function main() {
 }
 
 main();
+

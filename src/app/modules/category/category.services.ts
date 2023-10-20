@@ -1,14 +1,51 @@
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
-import { Category, User, UserRole } from "@prisma/client";
+import { Category, Prisma, User, UserRole } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { JwtPayload } from "jsonwebtoken";
 import { hashingHelper } from "../../../helpers/hashingHelper";
+import { ICategoryFilter } from "./category.interface";
+import { IPagination } from "../../../interfaces/pagination";
+import { pagination_map } from "../../../helpers/pagination";
+import { GetWhereConditions } from "./category.condition";
+import { GenericResponse } from "../../../interfaces/common";
 
 //* categoryList
-const categories_list = async (): Promise<Partial<Category>[] | null> => {
-	const categories = await prisma.category.findMany({});
-	return categories;
+const categories_list = async (
+	filers: ICategoryFilter,
+	pagination_data: Partial<IPagination>
+): Promise<GenericResponse<Category[]> | null> => {
+	//
+	const { page, size, skip, sortObject } = pagination_map(
+		pagination_data,
+		"created_at"
+	);
+
+	// and conditions (for search and filter)
+	const whereConditions: Prisma.CategoryWhereInput =
+		GetWhereConditions(filers);
+
+	//
+	const all_service = await prisma.category.findMany({
+		where: whereConditions,
+		skip,
+		take: size,
+		orderBy: sortObject,
+	});
+	const total = await prisma.category.count({
+		where: whereConditions,
+	});
+	const totalPage = Math.ceil(total / size);
+
+	return {
+		meta: {
+			page: Number(page),
+			size: Number(size),
+			total: total,
+			totalPage,
+		},
+		data: all_service,
+	};
 };
 
 // * category_details

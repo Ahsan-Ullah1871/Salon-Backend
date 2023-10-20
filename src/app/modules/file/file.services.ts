@@ -63,7 +63,7 @@ const get_all_files = async (
 		take: size,
 		orderBy: sortObject,
 	});
-	const total = await prisma.service.count();
+	const total = await prisma.userFile.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {

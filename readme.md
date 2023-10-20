@@ -31,6 +31,11 @@ use each of these endpoints.
 
 ```http
 POST /auth/signup
+{
+  "username": "newuser",
+  "password": "password123",
+  "email": "newuser@example.com"
+}
 ```
 
 #### Sign In
@@ -43,6 +48,10 @@ POST /auth/signup
 
 ```http
 POST /auth/signin
+{
+  "username": "newuser",
+  "password": "password123"
+}
 ```
 
 #### Refresh Token
@@ -55,6 +64,9 @@ POST /auth/signin
 
 ```http
 POST /auth/refresh-token
+{
+  "refreshToken": "your_refresh_token_here"
+}
 ```
 
 ### User Management <a name="user-management"></a>
@@ -89,7 +101,7 @@ GET /user/profile
 - Example:
 
 ```http
-GET /user/:id
+GET /user/1
 ```
 
 #### Update User
@@ -100,7 +112,10 @@ GET /user/:id
 - Example:
 
 ```http
-PATCH /user/:id
+PATCH /user/1
+{
+  "email": "updated_email@example.com"
+}
 ```
 
 #### Delete User
@@ -111,7 +126,7 @@ PATCH /user/:id
 - Example:
 
 ```http
-DELETE /user/:id
+DELETE /user/1
 ```
 
 ### File Management <a name="file-management"></a>
@@ -126,6 +141,7 @@ DELETE /user/:id
 
 ```http
 POST /file/upload
+# Upload your file as part of the request body
 ```
 
 #### Get All Files
@@ -160,7 +176,7 @@ GET /category
 - Example:
 
 ```http
-GET /category/:id
+GET /category/1
 ```
 
 #### Create Category
@@ -173,6 +189,10 @@ GET /category/:id
 
 ```http
 POST /category
+{
+  "name": "New Category",
+  "description": "Description of the new category"
+}
 ```
 
 #### Update Category
@@ -183,7 +203,10 @@ POST /category
 - Example:
 
 ```http
-PATCH /category/:id
+PATCH /category/1
+{
+  "name": "Updated Category Name"
+}
 ```
 
 #### Delete Category
@@ -194,7 +217,7 @@ PATCH /category/:id
 - Example:
 
 ```http
-DELETE /category/:id
+DELETE /category/1
 ```
 
 ### Blog Posts <a name="blog-posts"></a>
@@ -209,6 +232,10 @@ DELETE /category/:id
 
 ```http
 POST /blog/create
+{
+  "title": "New Blog Post",
+  "content": "Content of the new blog post."
+}
 ```
 
 #### Get All Blog Posts
@@ -230,7 +257,7 @@ GET /blog
 - Example:
 
 ```http
-GET /blog/service/:serviceID
+GET /blog/service/1
 ```
 
 #### Get Blog Post Details
@@ -241,7 +268,7 @@ GET /blog/service/:serviceID
 - Example:
 
 ```http
-GET /blog/:id
+GET /blog/1
 ```
 
 #### Update Blog Post
@@ -252,7 +279,10 @@ GET /blog/:id
 - Example:
 
 ```http
-PATCH /blog/:id
+PATCH /blog/1
+{
+  "content": "Updated content of the blog post."
+}
 ```
 
 #### Delete Blog Post
@@ -263,7 +293,7 @@ PATCH /blog/:id
 - Example:
 
 ```http
-DELETE /blog/:id
+DELETE /blog/1
 ```
 
 ### Services <a name="services"></a>
@@ -278,6 +308,12 @@ DELETE /blog/:id
 
 ```http
 POST /service/create
+{
+  "name": "New Service",
+  "categoryID": 1,
+  "description": "Description of the new service",
+  "price": 50.00
+}
 ```
 
 #### Get All Services
@@ -289,6 +325,8 @@ POST /service/create
 
 ```http
 GET /service
+
+
 ```
 
 #### Get Services by Category
@@ -299,7 +337,7 @@ GET /service
 - Example:
 
 ```http
-GET /service/:categoryID/category
+GET /service/1/category
 ```
 
 #### Get Service Details
@@ -310,7 +348,7 @@ GET /service/:categoryID/category
 - Example:
 
 ```http
-GET /service/:id
+GET /service/1
 ```
 
 #### Update Service
@@ -321,7 +359,10 @@ GET /service/:id
 - Example:
 
 ```http
-PATCH /service/:id
+PATCH /service/1
+{
+  "price": 60.00
+}
 ```
 
 #### Delete Service
@@ -332,17 +373,14 @@ PATCH /service/:id
 - Example:
 
 ```http
-DELETE /service/:id
+DELETE /service/1
 ```
 
 ### Reviews <a name="reviews"></a>
 
 #### Create Review
 
-- Endpoint:
-
-`POST /review/create`
-
+- Endpoint: `POST /review/create`
 - Description: Create a new review.
 - Request Body: Review information.
 - Required Roles: Admin, Super Admin, Customer
@@ -350,6 +388,11 @@ DELETE /service/:id
 
 ```http
 POST /review/create
+{
+  "serviceID": 1,
+  "rating": 4,
+  "comment": "Great service!"
+}
 ```
 
 #### Get All Reviews
@@ -371,7 +414,7 @@ GET /review
 - Example:
 
 ```http
-GET /review/:id
+GET /review/1
 ```
 
 #### Update Review
@@ -382,7 +425,11 @@ GET /review/:id
 - Example:
 
 ```http
-PATCH /review/:id
+PATCH /review/1
+{
+  "rating": 5,
+  "comment": "Exceptional service!"
+}
 ```
 
 #### Delete Review
@@ -393,7 +440,7 @@ PATCH /review/:id
 - Example:
 
 ```http
-DELETE /review/:id
+DELETE /review/1
 ```
 
 ### Workers <a name="workers"></a>
@@ -408,6 +455,11 @@ DELETE /review/:id
 
 ```http
 POST /worker/create
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "description": "Experienced stylist"
+}
 ```
 
 #### Get All Workers
@@ -429,7 +481,7 @@ GET /worker
 - Example:
 
 ```http
-GET /worker/:id
+GET /worker/1
 ```
 
 #### Update Worker
@@ -440,7 +492,10 @@ GET /worker/:id
 - Example:
 
 ```http
-PATCH /worker/:id
+PATCH /worker/1
+{
+  "description": "Experienced and highly skilled stylist"
+}
 ```
 
 #### Delete Worker
@@ -451,7 +506,7 @@ PATCH /worker/:id
 - Example:
 
 ```http
-DELETE /worker/:id
+DELETE /worker/1
 ```
 
 ### Schedules <a name="schedules"></a>
@@ -466,6 +521,11 @@ DELETE /worker/:id
 
 ```http
 POST /schedule/create
+{
+  "workerID": 1,
+  "startDateTime": "2023-10-25T10:00:00",
+  "endDateTime": "2023-10-25T12:00:00"
+}
 ```
 
 #### Get All Schedules
@@ -487,7 +547,7 @@ GET /schedule
 - Example:
 
 ```http
-GET /schedule/:id
+GET /schedule/1
 ```
 
 #### Update Schedule
@@ -498,7 +558,10 @@ GET /schedule/:id
 - Example:
 
 ```http
-PATCH /schedule/:id
+PATCH /schedule/1
+{
+  "endDateTime": "2023-10-25T13:00:00"
+}
 ```
 
 #### Delete Schedule
@@ -509,7 +572,7 @@ PATCH /schedule/:id
 - Example:
 
 ```http
-DELETE /schedule/:id
+DELETE /schedule/1
 ```
 
 ### Appointments <a name="appointments"></a>
@@ -524,6 +587,12 @@ DELETE /schedule/:id
 
 ```http
 POST /appointment/create
+{
+  "workerID": 1,
+  "serviceID": 1,
+  "startDateTime": "2023-10-25T11:00:00",
+  "endDateTime": "2023-10-25T11:30:00"
+}
 ```
 
 #### Get All Appointments
@@ -556,7 +625,7 @@ GET /appointment/worker
 - Example:
 
 ```http
-GET /appointment/:id
+GET /appointment/1
 ```
 
 #### Update Appointment
@@ -567,7 +636,10 @@ GET /appointment/:id
 - Example:
 
 ```http
-PATCH /appointment/:id
+PATCH /appointment/1
+{
+  "endDateTime": "2023-10-25T12:00:00"
+}
 ```
 
 #### Delete Appointment
@@ -578,7 +650,7 @@ PATCH /appointment/:id
 - Example:
 
 ```http
-DELETE /appointment/:id
+DELETE /appointment/1
 ```
 
 ## Conclusion
@@ -588,3 +660,4 @@ Marketplace API. Each endpoint has specific requirements and functionalities,
 and it is essential to ensure you have the necessary roles and permissions when
 making requests. If you have any questions or need further assistance, please
 refer to the API's documentation or contact the API administrator.
+

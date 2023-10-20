@@ -31,16 +31,49 @@ const create_new_appointment = async (
 			id: appointment_data.schedule_id,
 		},
 	});
-
 	if (!schedule) {
 		throw new ApiError(httpStatus.BAD_REQUEST, "Schedule not found");
 	}
+	if (!schedule.available) {
+		throw new ApiError(
+			httpStatus.BAD_REQUEST,
+			"This schedule not available now"
+		);
+	}
 
-	const appointment = await prisma.appointment.create({
-		data: appointment_data,
-	});
+	//
+	const new_appointment = await prisma.$transaction(
+		async (transaction) => {
+			// delete feedbacks
+			if (schedule) {
+				const update_schedule =
+					await transaction.schedule.update({
+						where: {
+							id: schedule.id,
+						},
+						data: {
+							available: false,
+						},
+					});
+			}
 
-	return appointment;
+			//
+			const appointment = await transaction.appointment.create({
+				data: appointment_data,
+			});
+
+			return appointment;
+		}
+	);
+
+	if (new_appointment) {
+		return new_appointment;
+	}
+
+	throw new ApiError(
+		httpStatus.BAD_REQUEST,
+		"Unable to book an appointment"
+	);
 };
 
 //* gel_all_ appointment
@@ -70,8 +103,25 @@ const get_all_appointments = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+					phone_number: true,
+				},
+			},
+			service: true,
+			schedule: {
+				include: {
+					worker: true,
+				},
+			},
+		},
 	});
-	const total = await prisma.appointment.count();
+	const total = await prisma.appointment.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {
@@ -113,8 +163,25 @@ const get_all_appointments_by_worker = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+					phone_number: true,
+				},
+			},
+			service: true,
+			schedule: {
+				include: {
+					worker: true,
+				},
+			},
+		},
 	});
-	const total = await prisma.appointment.count();
+	const total = await prisma.appointment.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {
@@ -178,30 +245,57 @@ const appointment_update = async (
 		throw new ApiError(httpStatus.NOT_FOUND, "appointment not found");
 	}
 	// service checking
-	const service = await prisma.service.findUnique({
-		where: {
-			id: appointment_data.service_id,
-		},
-	});
+	if (appointment_data.service_id) {
+		const service = await prisma.service.findUnique({
+			where: {
+				id: appointment_data.service_id,
+			},
+		});
 
-	if (!service) {
-		throw new ApiError(httpStatus.BAD_REQUEST, "Service not found");
+		if (!service) {
+			throw new ApiError(
+				httpStatus.BAD_REQUEST,
+				"Service not found"
+			);
+		}
 	}
 
 	// schedule  checking
-	const schedule = await prisma.schedule.findUnique({
-		where: {
-			id: appointment_data.schedule_id,
-		},
-	});
+	if (appointment_data.schedule_id) {
+		const schedule = await prisma.schedule.findUnique({
+			where: {
+				id: appointment_data.schedule_id,
+			},
+		});
 
-	if (!schedule) {
-		throw new ApiError(httpStatus.BAD_REQUEST, "Schedule not found");
+		if (!schedule) {
+			throw new ApiError(
+				httpStatus.BAD_REQUEST,
+				"Schedule not found"
+			);
+		}
 	}
 
 	const appointment = await prisma.appointment.update({
 		where: { id: appointment_id },
 		data: appointment_data,
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+					phone_number: true,
+				},
+			},
+			service: true,
+			schedule: {
+				include: {
+					worker: true,
+				},
+			},
+		},
 	});
 
 	return appointment;

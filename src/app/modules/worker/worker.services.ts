@@ -7,7 +7,7 @@ import ApiError from "../../errors/ApiError";
 import httpStatus from "http-status";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../../shared/prisma";
-import { Prisma, Worker } from "@prisma/client";
+import { Prisma, UserRole, Worker } from "@prisma/client";
 import { IWorkerDataWithCV, IWorkerFilter } from "./worker.interface";
 
 //* Create new worker
@@ -23,14 +23,29 @@ const create_new_worker = async (
 	if (!isExist) {
 		throw new ApiError(httpStatus.NOT_FOUND, "User not found");
 	}
+	if (isExist?.role == UserRole.worker) {
+		throw new ApiError(
+			httpStatus.NOT_FOUND,
+			"Already he is from the worker"
+		);
+	}
 
 	//  checking working history
 
 	const newWorker = await prisma.worker.create({
 		data: {
 			...worker_data,
-			worker_history: {
-				create: cv_data,
+			// worker_history: {
+			// 	create: cv_data,
+			// },
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					role: true,
+					profile_image: true,
+				},
 			},
 		},
 	});
@@ -59,8 +74,17 @@ const get_all_workers = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			user: {
+				select: {
+					id: true,
+					role: true,
+					profile_image: true,
+				},
+			},
+		},
 	});
-	const total = await prisma.worker.count();
+	const total = await prisma.worker.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);
 
 	return {
@@ -78,7 +102,15 @@ const get_all_workers = async (
 const get_worker_details = async (id: string): Promise<Worker | null> => {
 	const isExist = await prisma.worker.findUnique({
 		where: { id },
-		include: { worker_history: true },
+		include: {
+			user: {
+				select: {
+					id: true,
+					role: true,
+					profile_image: true,
+				},
+			},
+		},
 	});
 
 	if (!isExist) {
@@ -113,15 +145,15 @@ const worker_update = async (
 
 	//
 	const update_worker = await prisma.$transaction(async (transaction) => {
-		// delete appointments
-		if (cv_data) {
-			const cv_update = await transaction.cV.updateMany({
-				where: {
-					worker_id: isExist.id,
-				},
-				data: cv_data,
-			});
-		}
+		// // delete appointments
+		// if (cv_data) {
+		// 	const cv_update = await transaction.cV.updateMany({
+		// 		where: {
+		// 			worker_id: isExist.id,
+		// 		},
+		// 		data: cv_data,
+		// 	});
+		// }
 
 		// update worker
 		if (worker_data) {

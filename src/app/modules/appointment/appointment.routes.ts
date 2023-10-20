@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.post(
 	"/create",
-	authHandler(UserRole.customer, UserRole.admin),
+	authHandler(UserRole.customer, UserRole.admin, UserRole.super_admin),
 	requestValidationHandler(create_appointment_zod_schema),
 	appointmentController.createAppointment
 );

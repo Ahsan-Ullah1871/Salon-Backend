@@ -42,6 +42,7 @@ const user_signup = async (
 		{
 			user_id: created_user?.id,
 			role: created_user?.role,
+			email: created_user?.email,
 		},
 		config.jwt.access_token_secret as Secret,
 		config.jwt.access_token_expiresIn as string

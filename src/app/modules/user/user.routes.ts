@@ -30,6 +30,17 @@ router.get(
 );
 
 router.patch(
+	"/edit_profile/:id",
+	authHandler(
+		UserRole.admin,
+		UserRole.super_admin,
+		UserRole.customer,
+		UserRole.worker
+	),
+	UserController.editProfile
+);
+
+router.patch(
 	"/:id",
 	authHandler(
 		UserRole.admin,

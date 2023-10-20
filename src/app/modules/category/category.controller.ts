@@ -3,10 +3,19 @@ import httpStatus from "http-status";
 import { CategoryServices } from "./category.services";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
+import pick from "../../../shared/pick";
+import { service_filter_keys } from "./catgory.constant";
+import { pagination_keys } from "../../../constant/common";
 
 //*  Get  categoryList
 const categoryList = catchAsync(async (req: Request, res: Response) => {
-	const result = await CategoryServices.categories_list();
+	const filers = pick(req.query, service_filter_keys);
+	const pagination = pick(req.query, pagination_keys);
+
+	const result = await CategoryServices.categories_list(
+		filers,
+		pagination
+	);
 
 	sendResponse(res, {
 		status_code: httpStatus.OK,

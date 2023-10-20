@@ -51,10 +51,10 @@ model Worker {
   father_name       String
   mother_name       String
   is_married        Boolean    @default(false)
-  phone_number      Int        @unique
+  phone_number      String     @unique
   permanent_address String
   current_address   String
-  national_id       Int
+  national_id       String     @unique
   birth_date        DateTime
   worker_history    CV[]
   schedules         Schedule[]
@@ -191,14 +191,16 @@ model BlogPost {
   title       String
   content     String
   tags        String
+  image_url   String
+  image_id    String
   author_id   String
   author      User      @relation(fields: [author_id], references: [id])
   service_id  String?
   service     Service?  @relation(fields: [service_id], references: [id])
   published   Boolean   @default(false)
   publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
   @@map("blog_posts")
 }
