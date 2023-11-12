@@ -212,7 +212,7 @@ const get_appointment_details = async (
 	) {
 		throw new ApiError(
 			httpStatus.FORBIDDEN,
-			"You are not authorized to access this resource"
+			"You are not authorized to access this.."
 		);
 	}
 	if (
