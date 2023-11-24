@@ -35,4 +35,3 @@ router.get(
 );
 
 export const FileRoute = router;
-
