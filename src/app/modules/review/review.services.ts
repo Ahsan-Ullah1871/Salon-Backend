@@ -31,13 +31,48 @@ const create_new_review = async (
 	if (!isExist_service) {
 		throw new ApiError(httpStatus.NOT_FOUND, "Service not found");
 	}
-
-	//
-	const created_review_data = await prisma.review.create({
-		data: review_data,
+	// Appointment checking
+	const isAppointmentExist = await prisma.appointment.findUnique({
+		where: { id: review_data.appointment_id },
 	});
 
-	return created_review_data;
+	if (!isAppointmentExist) {
+		throw new ApiError(httpStatus.NOT_FOUND, "Appointment not found");
+	}
+	if (isAppointmentExist.is_reviewed) {
+		throw new ApiError(
+			httpStatus.NOT_FOUND,
+			"Appointment already reviewed"
+		);
+	}
+
+	// create a new review
+
+	const new_review_data = await prisma.$transaction(
+		async (transaction) => {
+			// delete appointments
+			const created_review_data =
+				await transaction.review.create({
+					data: review_data,
+				});
+
+			// update the appointment
+			const updated_appointment_data =
+				await transaction.appointment.update({
+					where: {
+						id: review_data.appointment_id,
+					},
+					data: { is_reviewed: true },
+				});
+			return created_review_data;
+		}
+	);
+
+	if (new_review_data) {
+		return new_review_data;
+	}
+
+	throw new ApiError(httpStatus.BAD_REQUEST, "Unable to create a review");
 };
 
 //* gel_all_ review
@@ -61,6 +96,10 @@ const get_all_reviews = async (
 		skip,
 		take: size,
 		orderBy: sortObject,
+		include: {
+			service: true,
+			appointment: true,
+		},
 	});
 	const total = await prisma.review.count({ where: whereConditions });
 	const totalPage = Math.ceil(total / size);

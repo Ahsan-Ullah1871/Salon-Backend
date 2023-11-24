@@ -153,6 +153,8 @@ model Appointment {
   end_time    DateTime
   created_at  DateTime          @default(now())
   updated_at  DateTime          @updatedAt
+  is_reviewed Boolean           @default(false)
+  reviews     Review[]
 
   @@map("appointments")
 }
@@ -176,6 +178,9 @@ model Review {
 
   service_id String
   service    Service @relation(fields: [service_id], references: [id])
+
+  appointment_id String
+  appointment    Appointment @relation(fields: [appointment_id], references: [id])
 
   rating     Int // A numerical rating (e.g., 1 to 5)
   comment    String? // An optional text comment from the user
